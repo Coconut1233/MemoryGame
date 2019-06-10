@@ -31,9 +31,13 @@ def tile_clicked(idx, button, icon):
     #zobrazení obrázku
     button.setIcon(QtGui.QIcon(icon))
 
+    #pokud neni zadne policko otevrene, ulozi se
     if selected_tile is None:
         selected_tile = button
+    #pokud uz jedno otevrene je, srovnaji se jejich obrazky -> pokud jsou stene, tlacitka se vypnou, pokud ne,
+    # zustanou otevrena SHOW_TIME milisekund a pak se zavrou
     else:
+        #pokud obrazky nejsou stejne
         if selected_tile.icon != button.icon:
             #timeout check
             in_timeout = True
@@ -41,23 +45,29 @@ def tile_clicked(idx, button, icon):
             loop = QEventLoop()
             QTimer.singleShot(SHOW_TIME, loop.quit)
             loop.exec_()
+            #"schovani policek"
             selected_tile.setIcon(QtGui.QIcon(None))
             button.setIcon(QtGui.QIcon(None))
             selected_tile = None
             in_timeout = False
+            #pokud jsou stejne
         else:
+            #vypnuti tlacitek
             button.setEnabled(False)
             selected_tile.setEnabled(False)
             selected_tile = None
 
+#definice onka aplikace
 app = QApplication([])
 window = QWidget()
 layout = QGridLayout()
 #pole nactenych obrazku z adresare
 pics = []
 
+#cteni obrazku ze slozky PIC_PATH
 for pic in os.listdir(PIC_PATH):
     pics.append(os.path.join("./pics", pic))
+
 #double pole obrázků (na pexeso jsou potreba od kazdeho 2)
 pics = pics * 2
 #zamichani
@@ -65,9 +75,11 @@ random.shuffle(pics)
 
 #pole tlacitek(policek)
 buttons = []
-#vytvoreni layoutu okna, prirazni obrazku k buttonum
+#vytvoreni layoutu okna  buttonu, prirazni obrazku k buttonum
 for i, icon in enumerate(pics):
+    #vytvoreni ikony pro tlacitko
     ic = QtGui.QPixmap(os.path.realpath(str(icon)))
+    #vytvoreni buttonu
     button = QPushButton(window)
     #nastaveni velikosti
     btn_size = QSize()
@@ -77,10 +89,13 @@ for i, icon in enumerate(pics):
     button.setIconSize(btn_size)
     x = i
     button.icon = icon
+    #pripjeni funcke na handling clicku
     button.clicked.connect(partial(tile_clicked, x, button, ic))
+    #umisteni tlacitka do okna
     layout.addWidget(button, i // 4, i % 4)
     buttons.append(button)
 
+#zobrazeni okna a spusteni aplikace
 window.setLayout(layout)
 window.show()
 app.exec_()
