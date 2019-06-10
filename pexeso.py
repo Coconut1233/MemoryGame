@@ -3,7 +3,7 @@ import random
 from functools import partial
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import QEventLoop, QTimer
+from PyQt5.QtCore import QEventLoop, QTimer, QSize
 from PyQt5.QtWidgets import QApplication, QGridLayout, QPushButton, QWidget
 
 #počet řádků
@@ -12,6 +12,7 @@ ROWS = 4
 COLUMNS = 4
 #adresář s obrázky (min pocet ROWS*COLUMNS/2)
 PIC_PATH = "./pics"
+#čas zobrazení špatného páru v ms
 SHOW_TIME = 500
 
 selected_tile = None
@@ -68,6 +69,12 @@ buttons = []
 for i, icon in enumerate(pics):
     ic = QtGui.QPixmap(os.path.realpath(str(icon)))
     button = QPushButton(window)
+    #nastaveni velikosti
+    btn_size = QSize()
+    btn_size.setHeight(50)
+    btn_size.setWidth(50)
+    button.setFixedSize(btn_size)
+    button.setIconSize(btn_size)
     x = i
     button.icon = icon
     button.clicked.connect(partial(tile_clicked, x, button, ic))
