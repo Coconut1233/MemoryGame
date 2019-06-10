@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QApplication, QGridLayout, QPushButton, QWidget
 
 ROWS = 4
 COLUMNS = 4
+#adresar s obrazky (min pocet ROWS*COLUMNS/2)
 PIC_PATH = "./pics"
 
 selected_tile = None
